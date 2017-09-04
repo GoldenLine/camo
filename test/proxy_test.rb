@@ -53,7 +53,7 @@ module CamoProxyTests
   end
 
   def test_follows_https_redirect_for_image_links
-    response = request('http://dl.dropbox.com/u/602885/github/soldier-squirrel.jpg')
+    response = request('https://httpbin.org/redirect-to?status_code=301&url=https%3A%2F%2Fhttpbin.org%2Fimage%2Fjpeg')
     assert_equal(200, response.code)
   end
 
@@ -72,7 +72,7 @@ module CamoProxyTests
       assert_equal "max-age=31536000; includeSubDomains", response.headers[:strict_transport_security]
     end
 
-    response = request('http://dl.dropbox.com/u/602885/github/soldier-squirrel.jpg')
+    response = request('http://httpbin.org/image/jpeg')
     assert_equal "deny", response.headers[:x_frame_options]
     assert_equal "default-src 'none'; img-src data:; style-src 'unsafe-inline'", response.headers[:content_security_policy]
     assert_equal "nosniff", response.headers[:x_content_type_options]
@@ -130,6 +130,11 @@ module CamoProxyTests
     assert_nothing_raised do
       request('https://httpbin.org/redirect-to?url=%2Fimage%2Fjpeg')
     end
+  end
+
+  def test_proxy_valid_css
+      response = request('http://www.csszengarden.com/214/214.css')
+      assert_equal(200, response.code)
   end
 
   def test_forwards_404_with_image

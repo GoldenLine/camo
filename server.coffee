@@ -17,7 +17,7 @@ keep_alive = process.env.CAMO_KEEP_ALIVE || "false"
 
 content_length_limit = parseInt(process.env.CAMO_LENGTH_LIMIT || 5242880, 10)
 
-accepted_image_mime_types = JSON.parse(Fs.readFileSync(
+accepted_asset_mime_types = JSON.parse(Fs.readFileSync(
   Path.resolve(__dirname, "mime-types.json"),
   encoding: 'utf8'
 ))
@@ -164,9 +164,9 @@ process_url = (url, transferredHeaders, resp, remaining_redirects) ->
 
             contentTypePrefix = contentType.split(";")[0].toLowerCase()
 
-            unless contentTypePrefix in accepted_image_mime_types
+            unless contentTypePrefix in accepted_asset_mime_types
               srcResp.destroy()
-              four_oh_four(resp, "Non-Image content-type returned '#{contentTypePrefix}'", url)
+              four_oh_four(resp, "Non-Image or Non-CSS content-type returned '#{contentTypePrefix}'", url)
               return
 
             debug_log newHeaders
